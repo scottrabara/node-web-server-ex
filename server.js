@@ -9,7 +9,6 @@ hbs.registerPartials(__dirname + '/views/partials');
 //Tell express that we will use Handlebars view engine
 app.set('view engine', 'hbs');
 
-app.use(express.static(__dirname + '/public'));
 
 // Add custom middleware with express
 // keep track of server requests
@@ -35,6 +34,10 @@ app.use((req, res, next) => {
     }
     next();
 })
+
+
+//enable static pages
+app.use(express.static(__dirname + '/public'));
 
 hbs.registerHelper('getCurrentYear', () => {
     return new Date().getFullYear()
