@@ -14,8 +14,7 @@ hbs.registerPartials(__dirname + '/views/partials');
 app.set('view engine', 'hbs');
 
 
-// Add custom middleware with express
-// keep track of server requests
+// Middleware to keep track of server requests
 app.use((req, res, next) => {
     var now = new Date().toString();
     var log = `${now}: ${req.method} ${req.url}`;
@@ -30,18 +29,21 @@ app.use((req, res, next) => {
 
 //under maintenance middleware
 app.use((req, res, next) => {
-    var maintenance = true;
+    var maintenance = false;
     if (maintenance) {
         res.render('maintenance.hbs',{
             pageTitle: 'Under maintenance...'
-        })
+        });
     }
-    next();
+    else {
+        next();
+    }
 })
 
-
-//enable static pages
+//enable static pages, this comes after maintenance
+//so maintenance middleware can render before static pages
 app.use(express.static(__dirname + '/public'));
+
 
 hbs.registerHelper('getCurrentYear', () => {
     return new Date().getFullYear()
@@ -51,6 +53,7 @@ hbs.registerHelper('screamIt', (text) => {
     return text.toUpperCase();
 })
 
+//Root directory
 app.get('/', (req, res) => {
     // res.send('<h1>Hello Express!</h1>');
     // res.send({
@@ -66,9 +69,18 @@ app.get('/', (req, res) => {
     });
 });
 
+//About page
 app.get('/about', (req, res) => { 
     res.render('about.hbs', {
         pageTitle: 'About Page'
+    })
+});
+
+//Projects page
+app.get('/projects', (req, res) => { 
+    res.render('projects.hbs', {
+        pageTitle: 'Projects Page',
+        welcomeMessage: 'Welcome, this is the projects page!'
     })
 });
 
